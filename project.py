@@ -70,7 +70,7 @@ def sgd(A,b,eta,k,loss):
 objective_value = L2sq(A,sgd(A,b,0.001,10,L2sq),b)
 # Compute optimal solution using least squares
 optimal_solution = np.linalg.lstsq(A, b, rcond=None)[0]
-optimal_objective_value = L2sq(optimal_solution)
+optimal_objective_value = L2sq(A,optimal_solution,b)
 
 # Print results
 print("Objective value from SGD:", objective_value)
