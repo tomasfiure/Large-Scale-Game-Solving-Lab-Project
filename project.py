@@ -11,9 +11,9 @@ def L2sq(mat,x,vec):
 
 
 #implement numerical method to calulate gradient at a point for any loss function
-def calculate_gradient(f, mat, x, vec,epsilon):
+def calculate_gradient(f, mat, x, vec):
     # Calculate the gradient
-    #epsilon = 1e-10  # Small value for numerical differentiation
+    epsilon = 1e-10  # Small value for numerical differentiation
     grad = np.zeros_like(x)
     for i in range(len(x)):
         x_plus = x.copy()
@@ -25,10 +25,10 @@ def calculate_gradient(f, mat, x, vec,epsilon):
 
     return grad
 
-def sgd(A,b,eta,k,loss,epsilon):
+def sgd(A,b,k,loss):
     # Begin Mini-Batch SGD 
     epochs = 1000
-    
+    eta=0.001
     # Pick random x to start
     theta = np.random.rand(10)
     #print("theta:",theta)
@@ -53,7 +53,9 @@ def sgd(A,b,eta,k,loss,epsilon):
             
             #compute gradient with current sample points and current theta
             #implement numerical method to get gradient on input loss function
-            loss_grad = calculate_gradient(loss,A_k,theta,b_k,epsilon)
+            loss_grad = calculate_gradient(loss,A_k,theta,b_k)
+            #following line used for k testing since it reduces computation
+            #loss_grad =2 * np.dot(A_k.T, np.dot(A_k, theta) - b_k)
             
             #add to sum (each of the ten spots in the vector is its own sum)
             l_sum+=loss_grad
@@ -67,7 +69,7 @@ def sgd(A,b,eta,k,loss,epsilon):
 # lines of code to check accuracy taken from chat GPT
 # Compute L2^2 value obtained by algorithm
 # note 2
-objective_value = L2sq(A,sgd(A,b,0.001,10,L2sq,1e-10),b)
+objective_value = L2sq(A,sgd(A,b,10,L2sq),b)
 # Compute optimal solution using least squares
 optimal_solution = np.linalg.lstsq(A, b, rcond=None)[0]
 optimal_objective_value = L2sq(A,optimal_solution,b)
@@ -76,8 +78,7 @@ optimal_objective_value = L2sq(A,optimal_solution,b)
 print("Objective value from SGD:", objective_value)
 print("Objective value from optimal solution:", optimal_objective_value)
 
-#potentially graph results over large sample size of trials
-
 #note 1: from what I understand from prof. Kroer's notes, there should be a (1/k) term, but algorithm works very well without it
 #note 2: here we are asked to minimize L2^2, so the loss function is f^2. However, algorithm is written for any loss function, just replace input
+
 
